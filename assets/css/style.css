@@ -305,12 +305,12 @@ footer .container { color: var(--muted); font-size: .84rem; text-align: center; 
   .nav-inner { height: auto; min-height: 60px; padding-top: .5rem; padding-bottom: .5rem; gap: .6rem; align-items: center; }
   .brand { flex: 0 0 auto; white-space: nowrap; gap: 0; }
   .brand-text { display: none; }   /* mobile: keep only the logo icon, free width for the menu */
-  .nav-right { flex: 1 1 auto; min-width: 0; justify-content: flex-end; }
+  .nav-right { flex: 1 1 auto; min-width: 0; justify-content: center; }
   .nav-links {
     display: flex;
     flex-wrap: wrap;               /* wrap onto 2+ lines instead of scrolling */
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: .45rem .9rem;             /* row-gap  column-gap */
     max-width: 100%;
   }
