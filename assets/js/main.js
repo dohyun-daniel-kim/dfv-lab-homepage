@@ -71,6 +71,26 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", fitNavPadding);
   window.addEventListener("load", fitNavPadding);
 
+  // mobile: tap a section that has a sub-menu to expand/collapse it (hover doesn't work on touch)
+  const isMobileNav = () => window.matchMedia("(max-width: 860px)").matches;
+  document.querySelectorAll(".has-dd").forEach((dd) => {
+    const link = dd.querySelector(":scope > a");
+    if (!link) return;
+    link.addEventListener("click", (e) => {
+      if (!isMobileNav()) return;            // desktop keeps hover behavior
+      e.preventDefault();                    // first tap toggles instead of navigating
+      const wasOpen = dd.classList.contains("open");
+      document.querySelectorAll(".has-dd.open").forEach((o) => o.classList.remove("open"));
+      if (!wasOpen) dd.classList.add("open");
+    });
+  });
+  // close any open sub-menu when tapping outside the nav
+  document.addEventListener("click", (e) => {
+    if (e.target.closest && !e.target.closest(".has-dd")) {
+      document.querySelectorAll(".has-dd.open").forEach((o) => o.classList.remove("open"));
+    }
+  });
+
   // news rendering from shared data (assets/js/news-data.js)
   const NEWS = window.NEWS || [];
   const newsImg = (n) => {
