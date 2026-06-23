@@ -29,7 +29,7 @@ const links = NAV.map((item) => {
 const NAVBAR = `
 <nav class="nav" id="nav">
   <div class="nav-inner">
-    <a href="index.html" class="brand" style="display:flex;align-items:center;gap:.5rem;"><img src="assets/img/logo4.png" alt="" style="height:30px;width:30px;object-fit:contain;" />DF&amp;V Lab</a>
+    <a href="index.html" class="brand" style="display:flex;align-items:center;gap:.5rem;"><img src="assets/img/logo4.png" alt="DF&amp;V Lab" style="height:30px;width:30px;object-fit:contain;" /><span class="brand-text">DF&amp;V Lab</span></a>
     <div class="nav-right">
       <div class="nav-links" id="nav-links">${links}</div>
     </div>
