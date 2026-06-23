@@ -132,7 +132,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2.2rem 0; }
 
 /* ---- navbar ---- */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: transparent;
-  border-bottom: 1px solid transparent; transition: background .25s, border-color .25s; }
+  border-bottom: 1px solid transparent; transition: background .25s, border-color .25s, transform .3s ease; }
+.nav.nav-hidden { transform: translateY(-100%); }   /* auto-hidden on scroll-down (mobile) */
 .nav.scrolled { background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom-color: var(--border); }
 .nav-inner { max-width: 1000px; margin: 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; position: relative; }
 .brand { font-weight: 700; font-size: 1.2rem; color: var(--text); }

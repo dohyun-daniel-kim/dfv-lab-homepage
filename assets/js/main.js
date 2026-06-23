@@ -55,7 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
   if (yr) yr.textContent = "2026";
 
   const nav = document.getElementById("nav");
-  const onScroll = () => nav && nav.classList.toggle("scrolled", window.scrollY > 8);
+  const isMobileNav = () => window.matchMedia("(max-width: 860px)").matches;
+
+  // background after scrolling a bit + (mobile) auto-hide the header on scroll-down,
+  // reveal on scroll-up, so the taller wrapping menu doesn't eat reading space.
+  let lastY = window.scrollY;
+  const onScroll = () => {
+    if (!nav) return;
+    const y = window.scrollY;
+    nav.classList.toggle("scrolled", y > 8);
+    if (isMobileNav() && y > 140 && y > lastY) {
+      nav.classList.add("nav-hidden");                       // scrolling down → hide
+      document.querySelectorAll(".has-dd.open").forEach((o) => o.classList.remove("open"));
+    } else if (!isMobileNav() || y < lastY) {
+      nav.classList.remove("nav-hidden");                    // scrolling up / desktop → show
+    }
+    lastY = y;
+  };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -72,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("load", fitNavPadding);
 
   // mobile: tap a section that has a sub-menu to expand/collapse it (hover doesn't work on touch)
-  const isMobileNav = () => window.matchMedia("(max-width: 860px)").matches;
   document.querySelectorAll(".has-dd").forEach((dd) => {
     const link = dd.querySelector(":scope > a");
     if (!link) return;
