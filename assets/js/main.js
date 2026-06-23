@@ -32,7 +32,6 @@ const NAVBAR = `
     <a href="index.html" class="brand" style="display:flex;align-items:center;gap:.5rem;"><img src="assets/img/logo4.png" alt="" style="height:30px;width:30px;object-fit:contain;" />DF&amp;V Lab</a>
     <div class="nav-right">
       <div class="nav-links" id="nav-links">${links}</div>
-      <button class="burger" id="burger" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
     </div>
   </div>
 </nav>`;
@@ -60,9 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  const burger = document.getElementById("burger");
-  const navLinks = document.getElementById("nav-links");
-  if (burger && navLinks) burger.addEventListener("click", () => navLinks.classList.toggle("open"));
+  // nav bar is always visible on mobile (see style.css @media) — no hamburger toggle needed.
+  // The wrapping menu makes the header taller on narrow screens, so match the main top padding
+  // to the actual header height (desktop keeps the CSS default).
+  const fitNavPadding = () => {
+    const m = document.querySelector("main");
+    if (!nav || !m) return;
+    m.style.paddingTop = window.innerWidth <= 860 ? nav.offsetHeight + 24 + "px" : "";
+  };
+  fitNavPadding();
+  window.addEventListener("resize", fitNavPadding);
+  window.addEventListener("load", fitNavPadding);
 
   // news rendering from shared data (assets/js/news-data.js)
   const NEWS = window.NEWS || [];

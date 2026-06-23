@@ -298,12 +298,25 @@ footer .container { color: var(--muted); font-size: .84rem; text-align: center; 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 @media (max-width: 860px) {
-  .nav-links { display: none; }
-  .nav-links.open { display: flex; flex-direction: column; align-items: flex-start; position: absolute; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 1rem 22px; gap: .6rem; max-height: 80vh; overflow-y: auto; }
-  .burger { display: inline-block; }
-  .nav-links.open .has-dd { display: block; width: 100%; }
-  .nav-links.open .dd { display: flex; position: static; border: 0; box-shadow: none; background: transparent; padding: .2rem 0 .4rem 1rem; min-width: 0; }
-  .nav-links.open .caret { display: none; }
+  /* show the top nav as an always-visible bar (PC-like) instead of a hamburger menu;
+     the menu wraps onto multiple lines, the header grows to fit (JS adjusts main padding) */
+  .burger { display: none; }
+  .nav-inner { height: auto; min-height: 60px; padding-top: .5rem; padding-bottom: .5rem; gap: .6rem; align-items: center; }
+  .brand { flex: 0 0 auto; white-space: nowrap; }   /* keep "DF&V Lab" on one line */
+  .nav-right { flex: 1 1 auto; min-width: 0; justify-content: flex-end; }
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;               /* wrap onto 2+ lines instead of scrolling */
+    align-items: center;
+    justify-content: flex-end;
+    gap: .45rem .9rem;             /* row-gap  column-gap */
+    max-width: 100%;
+  }
+  .nav-links a { white-space: nowrap; font-size: .9rem; }
+  /* hover dropdowns don't work on touch — hide the popout and caret; the parent link goes to
+     each section's main page, which carries its own sub-page links */
+  .has-dd .dd { display: none !important; }
+  .caret { display: none; }
 }
 
 @media (max-width: 640px) {
