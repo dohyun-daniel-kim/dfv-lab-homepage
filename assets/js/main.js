@@ -108,6 +108,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // news rendering from shared data (assets/js/news-data.js)
   const NEWS = window.NEWS || [];
+
+  // news hub: sync each year-card preview to that year's most recent photo
+  document.querySelectorAll(".year-card").forEach((card) => {
+    const m = (card.getAttribute("href") || "").match(/news-(\d{4})\.html/);
+    const ylEl = card.querySelector(".yl");
+    const year = m ? m[1] : (ylEl ? ylEl.textContent.trim() : "");
+    if (!year) return;
+    const latest = NEWS.find((n) => n.date.slice(0, 4) === year && n.imgs && n.imgs.length);
+    const img = card.querySelector("img");
+    if (latest && img) img.src = "assets/img/news/" + year + "/" + latest.imgs[0];
+  });
   const newsImg = (n) => {
     if (!n.imgs || !n.imgs.length) return "";
     const y = n.date.slice(0, 4);
