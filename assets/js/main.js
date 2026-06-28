@@ -153,30 +153,21 @@ document.addEventListener("DOMContentLoaded", () => {
     ).join("");
     initCarousels(yearEl);
   }
+  // homepage: recent news as a card grid (representative photo + date + title)
   const recentEl = document.getElementById("recent-news");
-  const recentCount = parseInt((recentEl && recentEl.getAttribute("data-count")) || "5", 10);
   if (recentEl) {
-    recentEl.innerHTML = NEWS.slice(0, recentCount).map((n) =>
-      '<li><span class="d">' + n.date + "</span><span>" + n.title + "</span></li>"
-    ).join("");
-  }
-  // homepage: a carousel of one representative photo per recent news item
-  const recentMedia = document.getElementById("recent-news-media");
-  if (recentMedia) {
-    const reps = NEWS.slice(0, recentCount).filter((n) => n.imgs && n.imgs.length);
-    if (reps.length) {
-      const slide = (n) => {
-        const y = n.date.slice(0, 4), f = n.imgs[0];
-        return '<a href="assets/img/news/' + y + '/' + f + '"><img src="assets/img/news/' + y + '/' + f + '" loading="lazy" alt="" /></a>';
-      };
-      recentMedia.innerHTML = '<div class="news-media carousel">' +
-        '<button class="cbtn prev" type="button" aria-label="이전 사진">&#10094;</button>' +
-        '<div class="carousel-track">' + reps.map(slide).join("") + "</div>" +
-        '<button class="cbtn next" type="button" aria-label="다음 사진">&#10095;</button>' +
-        '<div class="carousel-count"><span class="cur">1</span> / ' + reps.length + "</div>" +
-        "</div>";
-      initCarousels(recentMedia);
-    }
+    const recentCount = parseInt(recentEl.getAttribute("data-count") || "5", 10);
+    const card = (n) => {
+      const y = n.date.slice(0, 4);
+      const thumb = (n.imgs && n.imgs.length)
+        ? '<img src="assets/img/news/' + y + '/' + n.imgs[0] + '" loading="lazy" alt="" />'
+        : '<span class="nc-noimg"><i class="fa-regular fa-newspaper"></i></span>';
+      return '<a class="news-card" href="news-' + y + '.html">' +
+        '<div class="nc-thumb">' + thumb + "</div>" +
+        '<div class="nc-body"><span class="nc-date">' + n.date + "</span>" +
+        '<span class="nc-title">' + n.title + "</span></div></a>";
+    };
+    recentEl.innerHTML = NEWS.slice(0, recentCount).map(card).join("");
   }
 
   // intro KO / EN toggle
