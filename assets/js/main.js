@@ -154,11 +154,29 @@ document.addEventListener("DOMContentLoaded", () => {
     initCarousels(yearEl);
   }
   const recentEl = document.getElementById("recent-news");
+  const recentCount = parseInt((recentEl && recentEl.getAttribute("data-count")) || "5", 10);
   if (recentEl) {
-    const count = parseInt(recentEl.getAttribute("data-count") || "5", 10);
-    recentEl.innerHTML = NEWS.slice(0, count).map((n) =>
+    recentEl.innerHTML = NEWS.slice(0, recentCount).map((n) =>
       '<li><span class="d">' + n.date + "</span><span>" + n.title + "</span></li>"
     ).join("");
+  }
+  // homepage: a carousel of one representative photo per recent news item
+  const recentMedia = document.getElementById("recent-news-media");
+  if (recentMedia) {
+    const reps = NEWS.slice(0, recentCount).filter((n) => n.imgs && n.imgs.length);
+    if (reps.length) {
+      const slide = (n) => {
+        const y = n.date.slice(0, 4), f = n.imgs[0];
+        return '<a href="assets/img/news/' + y + '/' + f + '"><img src="assets/img/news/' + y + '/' + f + '" loading="lazy" alt="" /></a>';
+      };
+      recentMedia.innerHTML = '<div class="news-media carousel">' +
+        '<button class="cbtn prev" type="button" aria-label="이전 사진">&#10094;</button>' +
+        '<div class="carousel-track">' + reps.map(slide).join("") + "</div>" +
+        '<button class="cbtn next" type="button" aria-label="다음 사진">&#10095;</button>' +
+        '<div class="carousel-count"><span class="cur">1</span> / ' + reps.length + "</div>" +
+        "</div>";
+      initCarousels(recentMedia);
+    }
   }
 
   // intro KO / EN toggle
