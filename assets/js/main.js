@@ -109,6 +109,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // news rendering from shared data (assets/js/news-data.js)
   const NEWS = window.NEWS || [];
 
+  // stable per-item anchor id (date digits, suffixed when a date repeats) so the
+  // homepage recent-news cards can deep-link to the exact item on the year page.
+  const newsAnchor = (() => {
+    const seen = {};
+    const map = new Map();
+    NEWS.forEach((n) => {
+      const base = "n-" + n.date.replace(/[^0-9]/g, "");
+      const c = (seen[base] = (seen[base] || 0) + 1);
+      map.set(n, base + (c > 1 ? "-" + c : ""));
+    });
+    return (n) => map.get(n);
+  })();
+
   // news hub: sync each year-card preview to that year's most recent photo
   document.querySelectorAll(".year-card").forEach((card) => {
     const m = (card.getAttribute("href") || "").match(/news-(\d{4})\.html/);
@@ -148,10 +161,23 @@ document.addEventListener("DOMContentLoaded", () => {
   if (yearEl) {
     const yr = yearEl.getAttribute("data-year");
     yearEl.innerHTML = NEWS.filter((n) => n.date.slice(0, 4) === yr).map((n) =>
-      '<div class="na"><div class="nh"><span class="nd">' + n.date + "</span>" + n.title + "</div>" +
+      '<div class="na" id="' + newsAnchor(n) + '"><div class="nh"><span class="nd">' + n.date + "</span>" + n.title + "</div>" +
       (n.body ? '<div class="nb">' + n.body + "</div>" : "") + newsImg(n) + "</div>"
     ).join("");
     initCarousels(yearEl);
+
+    // items are injected by JS, so the browser's native scroll-to-hash on load
+    // finds nothing — scroll to the deep-linked item ourselves, offset for the
+    // fixed nav, and briefly highlight it.
+    if (location.hash) {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) requestAnimationFrame(() => {
+        const navH = (nav ? nav.offsetHeight : 0) + 16;
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH, behavior: "auto" });
+        target.classList.add("news-flash");
+        setTimeout(() => target.classList.remove("news-flash"), 2000);
+      });
+    }
   }
   // homepage: recent news as a card grid (representative photo + date + title)
   const recentEl = document.getElementById("recent-news");
@@ -162,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const thumb = (n.imgs && n.imgs.length)
         ? '<img src="assets/img/news/' + y + '/' + n.imgs[0] + '" loading="lazy" alt="" />'
         : '<span class="nc-noimg"><i class="fa-regular fa-newspaper"></i></span>';
-      return '<a class="news-card" href="news-' + y + '.html">' +
+      return '<a class="news-card" href="news-' + y + '.html#' + newsAnchor(n) + '">' +
         '<div class="nc-thumb">' + thumb + "</div>" +
         '<div class="nc-body"><span class="nc-date">' + n.date + "</span>" +
         '<span class="nc-title">' + n.title + "</span></div></a>";

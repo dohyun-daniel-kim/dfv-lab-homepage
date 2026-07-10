@@ -107,8 +107,11 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
 @media (max-width: 440px) { .news-cards { grid-template-columns: 1fr; } }
 
 /* per-article news cards */
-.na { padding: 1.2rem 0; border-bottom: 1px solid var(--border); }
+.na { padding: 1.2rem 0; border-bottom: 1px solid var(--border); scroll-margin-top: 90px; }
 .na:last-child { border-bottom: 0; }
+/* brief highlight when arriving via a deep link from the homepage recent-news cards */
+.na.news-flash { animation: naFlash 2s ease; border-radius: 8px; }
+@keyframes naFlash { 0%, 25% { background: color-mix(in srgb, var(--theme) 16%, transparent); box-shadow: 0 0 0 8px color-mix(in srgb, var(--theme) 16%, transparent); } 100% { background: transparent; box-shadow: 0 0 0 8px transparent; } }
 .na .nh { font-weight: 600; font-size: 1rem; }
 .na .nd { color: var(--theme); font-weight: 700; font-size: .85rem; margin-right: .5rem; }
 .na p { margin: .45rem 0 0; font-size: .93rem; color: var(--muted); line-height: 1.6; }
