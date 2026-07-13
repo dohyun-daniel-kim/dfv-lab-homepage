@@ -112,6 +112,17 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
 @media (max-width: 760px) { .news-cards { grid-template-columns: repeat(2, 1fr); gap: .8rem; } }
 @media (max-width: 440px) { .news-cards { grid-template-columns: 1fr; } }
 
+/* narrow screens (incl. foldables): keep all 4 research-area cards on one row
+   — matching the width where recent-news shows 2 photos per row. Text scales
+   down with the viewport (clamp + vw) so nothing overflows the shrunken boxes. */
+@media (max-width: 760px) {
+  .area-cards { grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+  .area { padding: .8rem .4rem; min-width: 0; }
+  .area .ak { font-size: .68rem; }
+  .area h3 { font-size: clamp(.6rem, 2vw, .82rem); margin: .25rem 0 .3rem; overflow-wrap: break-word; }
+  .area p { font-size: clamp(.52rem, 1.8vw, .68rem); line-height: 1.35; overflow-wrap: break-word; }
+}
+
 /* per-article news cards */
 .na { padding: 1.2rem 0; border-bottom: 1px solid var(--border); scroll-margin-top: 90px; }
 .na:last-child { border-bottom: 0; }
