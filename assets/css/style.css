@@ -112,6 +112,17 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
 @media (max-width: 760px) { .news-cards { grid-template-columns: repeat(2, 1fr); gap: .8rem; } }
 @media (max-width: 440px) { .news-cards { grid-template-columns: 1fr; } }
 
+/* Below 836px the container is narrower than 4 x 186px + gaps, so the auto-fit
+   grid would drop to 3+1. Force 4 columns and scale the text with the viewport
+   from here down. Must stay above the 760px block so that one wins below 760. */
+@media (max-width: 835px) {
+  .area-cards { grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+  .area { padding: 1rem .6rem; min-width: 0; }
+  .area .ak { font-size: clamp(.68rem, 1.5vw, .78rem); }
+  .area h3 { font-size: clamp(.82rem, 1.95vw, 1.02rem); margin: .3rem 0 .35rem; overflow-wrap: break-word; }
+  .area p { font-size: clamp(.68rem, 1.55vw, .82rem); line-height: 1.4; overflow-wrap: break-word; }
+}
+
 /* narrow screens (incl. foldables): keep all 4 research-area cards on one row
    — matching the width where recent-news shows 2 photos per row. Text scales
    down with the viewport (clamp + vw) so nothing overflows the shrunken boxes. */
