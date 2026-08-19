@@ -157,12 +157,33 @@ document.addEventListener("DOMContentLoaded", () => {
       }, { passive: true });
     });
   };
+  // news bodies are authored as one flowing paragraph — start each sentence on
+  // its own line. Text inside <ul>/<ol> is left alone: list items already sit on
+  // their own lines, and dates like "2025.12.12. 13:00" there would split wrongly.
+  const sentenceLines = (html) => {
+    const toks = html.split(/(<[^>]*>)/);
+    let list = 0;
+    return toks.map((tok, i) => {
+      if (tok.charAt(0) === "<") {
+        if (/^<(ul|ol)\b/i.test(tok)) list++;
+        else if (/^<\/(ul|ol)>/i.test(tok)) list--;
+        return tok;
+      }
+      if (list > 0) return tok;
+      // a sentence may also end just before an inline tag (…했습니다. <strong>…),
+      // leaving the space at the end of this chunk — break there too, unless a
+      // list follows, which already starts its own block.
+      const next = toks[i + 1] || "";
+      const tail = next && !/^<(ul|ol)\b/i.test(next) ? "$1<br />" : "$1";
+      return tok.replace(/([.!?])[ \t]+(?=\S)/g, "$1<br />").replace(/([.!?])[ \t]+$/, tail);
+    }).join("");
+  };
   const yearEl = document.getElementById("news-year");
   if (yearEl) {
     const yr = yearEl.getAttribute("data-year");
     yearEl.innerHTML = NEWS.filter((n) => n.date.slice(0, 4) === yr).map((n) =>
       '<div class="na" id="' + newsAnchor(n) + '"><div class="nh"><span class="nd">' + n.date + "</span>" + n.title + "</div>" +
-      (n.body ? '<div class="nb">' + n.body + "</div>" : "") + newsImg(n) + "</div>"
+      (n.body ? '<div class="nb">' + sentenceLines(n.body) + "</div>" : "") + newsImg(n) + "</div>"
     ).join("");
     initCarousels(yearEl);
 
