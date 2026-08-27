@@ -200,6 +200,30 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
+  // A news item with no photo still needs a thumbnail. Rather than one generic
+  // placeholder for all of them, derive an icon from the title so the tile says
+  // what KIND of news it is. Keeping the rules here means news-data.js needs no
+  // extra field — the first matching rule wins, so order is priority.
+  const NEWS_ICONS = [
+    [["특허"], "fa-solid fa-certificate"],
+    [["프로그램 등록", "도구 프로그램", "SW 저작권"], "fa-solid fa-code"],
+    [["업무협약", "MoU"], "fa-solid fa-handshake"],
+    [["NEXA", "동아리"], "fa-solid fa-shield-halved"],
+    [["우수논문상", "최우수", "수상했"], "fa-solid fa-trophy"],
+    [["발표", "게재", "학술대회"], "fa-solid fa-microphone-lines"],
+    [["합격", "학부연구생", "학부 연구생", "연구원 참여",
+      "합류", "졸업", "진학", "취업", "창립", "창설"], "fa-solid fa-people-group"],
+    [["자문", "침해사고", "점검", "복구"], "fa-solid fa-fingerprint"],
+    [["연구과제", "착수", "선정", "사업", "지원"], "fa-solid fa-rocket"],
+    [["리모델링", "공간 이전"], "fa-solid fa-building-columns"],
+  ];
+  const newsIcon = (title) => {
+    for (const [kws, cls] of NEWS_ICONS) {
+      if (kws.some((k) => title.includes(k))) return cls;
+    }
+    return "fa-regular fa-newspaper";
+  };
+
   // homepage: recent news as a card grid (representative photo + date + title)
   const recentEl = document.getElementById("recent-news");
   if (recentEl) {
@@ -208,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const y = n.date.slice(0, 4);
       const thumb = (n.imgs && n.imgs.length)
         ? '<img src="assets/img/news/' + y + '/' + n.imgs[0] + '" loading="lazy" alt="" />'
-        : '<span class="nc-noimg"><i class="fa-regular fa-newspaper"></i></span>';
+        : '<span class="nc-noimg"><i class="' + newsIcon(n.title) + '"></i></span>';
       return '<a class="news-card" href="news-' + y + '.html#' + newsAnchor(n) + '">' +
         '<div class="nc-thumb">' + thumb + "</div>" +
         '<div class="nc-body"><span class="nc-date">' + n.date + "</span>" +

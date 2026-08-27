@@ -110,7 +110,12 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
 .nc-thumb { aspect-ratio: 4 / 3; background: var(--code-bg); overflow: hidden; }
 .nc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
 .news-card:hover .nc-thumb img { transform: scale(1.04); }
-.nc-noimg { display: grid; place-items: center; width: 100%; height: 100%; color: var(--muted); font-size: 1.8rem; opacity: .45; }
+/* Stand-in thumbnail for a news item with no photo: a theme-coloured tile
+   carrying an icon for that kind of news. The glyph takes --bg so it stays
+   readable on the deep blue of light mode and the bright blue of dark. */
+.nc-noimg { display: grid; place-items: center; width: 100%; height: 100%;
+            background: linear-gradient(140deg, var(--theme) 0%, var(--theme-ink) 100%);
+            color: var(--bg); font-size: 2.5rem; }
 .nc-body { padding: .75rem .85rem .9rem; display: flex; flex-direction: column; gap: .3rem; }
 .nc-date { color: var(--theme); font-weight: 600; font-size: .8rem; }
 .nc-title { color: var(--text); font-size: .92rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
