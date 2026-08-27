@@ -75,11 +75,16 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
 .area { text-align: center; padding: 1.2rem 1rem; }
 .area .ak { display: inline-block; font-family: "Roboto Slab", serif; font-weight: 700; }
 .area h3 { font-size: 1.02rem; margin: .35rem 0 .4rem; }
-.area p { font-size: .82rem; color: var(--muted); margin: 0; line-height: 1.5; }
+/* Research terms are laid out as flex items so a line break can only fall
+   BETWEEN terms — never inside one ("Anti-Forensics", "Autonomous Vessels"). */
+.atags { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+         gap: .12rem .5rem; font-size: .82rem; color: var(--muted); margin: 0; line-height: 1.5; }
+.atags span { white-space: nowrap; }
+.atags span:not(:last-child)::after { content: "·"; margin-left: .5rem; opacity: .55; }
 .area { border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.3rem; transition: transform .2s, box-shadow .2s; }
 .area:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -18px rgba(0,0,0,.4); }
 .area .ak { font-size: .78rem; color: var(--theme); font-weight: 700; }
-.area h3 { font-size: 1.05rem; margin: .3rem 0 .5rem; }
+.area h3 { font-size: 1.05rem; margin: .3rem 0 .5rem; text-wrap: balance; }
 .area ul { margin: 0; padding-left: 1.1rem; font-size: .86rem; color: var(--muted); }
 .area ul li { margin: .15rem 0; }
 
@@ -119,19 +124,22 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
   .area-cards { grid-template-columns: repeat(4, 1fr); gap: .75rem; }
   .area { padding: 1rem .6rem; min-width: 0; }
   .area .ak { font-size: clamp(.68rem, 1.5vw, .78rem); }
-  .area h3 { font-size: clamp(.82rem, 1.95vw, 1.02rem); margin: .3rem 0 .35rem; overflow-wrap: break-word; }
-  .area p { font-size: clamp(.68rem, 1.55vw, .82rem); line-height: 1.4; overflow-wrap: break-word; }
+  .area h3 { font-size: clamp(.82rem, 1.95vw, 1.02rem); margin: .3rem 0 .35rem; }
+  .atags { font-size: clamp(.68rem, 1.55vw, .82rem); line-height: 1.4; gap: .1rem .38rem; }
+  .atags span:not(:last-child)::after { margin-left: .38rem; }
 }
 
-/* narrow screens (incl. foldables): keep all 4 research-area cards on one row
-   — matching the width where recent-news shows 2 photos per row. Text scales
-   down with the viewport (clamp + vw) so nothing overflows the shrunken boxes. */
+/* narrow screens (incl. foldables): 4 columns leave less room than the longest
+   single term ("Autonomous Vessels"), which is what forced the old mid-word
+   breaking. Drop to 2 columns instead — matching the width where recent-news
+   shows 2 photos per row — so every term still fits on one line. */
 @media (max-width: 760px) {
-  .area-cards { grid-template-columns: repeat(4, 1fr); gap: .5rem; }
-  .area { padding: .8rem .4rem; min-width: 0; }
-  .area .ak { font-size: .68rem; }
-  .area h3 { font-size: clamp(.6rem, 2vw, .82rem); margin: .25rem 0 .3rem; overflow-wrap: break-word; }
-  .area p { font-size: clamp(.52rem, 1.8vw, .68rem); line-height: 1.35; overflow-wrap: break-word; }
+  .area-cards { grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .area { padding: .9rem .7rem; min-width: 0; }
+  .area .ak { font-size: .7rem; }
+  .area h3 { font-size: .9rem; margin: .25rem 0 .3rem; }
+  .atags { font-size: .74rem; line-height: 1.4; gap: .1rem .4rem; }
+  .atags span:not(:last-child)::after { margin-left: .4rem; }
 }
 
 /* per-article news cards */
