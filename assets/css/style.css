@@ -10,6 +10,7 @@
   --theme-ink: #06406f;
   --border: #e9ecef;
   --code-bg: #f6f8fa;
+  --theme-soft: #e7eff7;   /* accent tint — news tiles */
   --nav-bg: rgba(255, 255, 255, 0.85);
 }
 html.dark {
@@ -20,6 +21,7 @@ html.dark {
   --theme-ink: #7cc0ff;
   --border: #2d2d2f;
   --code-bg: #2a2b2b;
+  --theme-soft: #1b2b3d;
   --nav-bg: rgba(28, 28, 29, 0.85);
 }
 
@@ -114,8 +116,8 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
    carrying an icon for that kind of news. The glyph takes --bg so it stays
    readable on the deep blue of light mode and the bright blue of dark. */
 .nc-noimg { display: grid; place-items: center; width: 100%; height: 100%;
-            background: linear-gradient(140deg, var(--theme) 0%, var(--theme-ink) 100%);
-            color: var(--bg); font-size: 2.5rem; }
+            background: var(--theme-soft); color: var(--theme);
+            font-size: 2.5rem; opacity: .9; }
 .nc-body { padding: .75rem .85rem .9rem; display: flex; flex-direction: column; gap: .3rem; }
 .nc-date { color: var(--theme); font-weight: 600; font-size: .8rem; }
 .nc-title { color: var(--text); font-size: .92rem; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
