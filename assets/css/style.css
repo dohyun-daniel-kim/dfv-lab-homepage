@@ -63,7 +63,6 @@ h1, h2, h3, h4, .brand, .name, .section-title, .bib-year .y, .person .ava {
 .hero-lab { text-align: center; padding: .5rem 0 0; }
 .hero-lab .tagline { font-size: 1.05rem; color: var(--muted); margin: .2rem 0 0; }
 .intro { max-width: 720px; margin: 1.6rem auto 0; text-align: center; color: var(--text); }
-.intro.en { color: var(--muted); }
 .intro .kw { font-weight: 700; color: var(--theme); }
 .intro strong { font-weight: 600; color: var(--text); }
 /* KO / EN toggle */
