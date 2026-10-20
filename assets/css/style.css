@@ -300,7 +300,7 @@ details.collapse > .bib { margin-top: 1.8rem; }
 .ptl-track { position: relative; min-height: 3.2rem;
   background: repeating-linear-gradient(to right, var(--border) 0 1px, transparent 1px calc(100% / 12)); border-right: 1px solid var(--border); }
 .ptl-head .ptl-track { min-height: 0; display: grid; grid-template-columns: repeat(12, 1fr); border-bottom: 1px solid var(--border); }
-.ptl-head .ptl-track span { padding: .2rem 0 .35rem .3rem; font-size: .78rem; font-weight: 700; color: var(--muted); }
+.ptl-head .ptl-track span { padding: .2rem 0 .35rem; text-align: center; font-size: .78rem; font-weight: 700; color: var(--muted); }
 .ptl-bar { position: absolute; top: 50%; height: 1.1rem; margin-top: -.55rem; border-radius: 4px; }
 .ptl-bar.lead { background: var(--theme); }
 .ptl-bar.part { background: color-mix(in srgb, var(--theme) 22%, transparent); border: 1.5px solid var(--theme); }
@@ -317,7 +317,7 @@ details.collapse > .bib { margin-top: 1.8rem; }
   .ptl-head .ptl-label { display: none; }
   .ptl-label { padding-bottom: 0; }
   .ptl-track { min-height: 2rem; }
-  .ptl-head .ptl-track span { padding-left: .1rem; font-size: .66rem; }
+  .ptl-head .ptl-track span { font-size: .66rem; }
 }
 /* generic button row (kept for other pages) */
 .btns { margin-top: .45rem; display: flex; gap: .4rem; flex-wrap: wrap; }
