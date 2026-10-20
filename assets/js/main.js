@@ -293,15 +293,23 @@ document.addEventListener("DOMContentLoaded", () => {
       `<span><i class="ptl-key is-lead is-done"></i>종료</span><span><i class="ptl-key-today"></i>오늘</span></div><div class="ptl-tip" hidden></div>`;
     ptl.innerHTML = html;
 
-    // name sits inside the bar when it fits, otherwise beside it (right, then left),
-    // and on narrow screens above it, shifted so it stays inside the chart
+    // name sits inside the bar on one line, or two lines in a taller bar; otherwise beside it
+    // (right, then left), and on narrow screens above it, shifted so it stays inside the chart
     const place = () => {
       ptl.querySelectorAll(".ptl-bar").forEach((b) => {
         const n = b.querySelector(".ptl-name"), row = b.parentElement;
-        b.classList.remove("out-r", "out-l", "out-t");
-        row.classList.remove("tall");
+        b.classList.remove("out-r", "out-l", "out-t", "wrap", "wrap-any");
+        row.classList.remove("tall", "tall2");
         n.style.left = n.style.maxWidth = "";
         if (n.scrollWidth <= b.clientWidth - 4) return;
+        b.classList.add("wrap");
+        row.classList.add("tall2");
+        const fits = () => n.offsetHeight <= b.clientHeight && n.scrollWidth <= n.clientWidth;
+        if (fits()) return;
+        b.classList.add("wrap-any"); // break inside words too, to fill both lines
+        if (fits()) return;
+        b.classList.remove("wrap", "wrap-any");
+        row.classList.remove("tall2");
         const room = row.clientWidth, w = n.scrollWidth, L = b.offsetLeft, R = L + b.offsetWidth;
         if (R + w + 12 <= room) b.classList.add("out-r");
         else if (L - w - 12 >= 0) b.classList.add("out-l");

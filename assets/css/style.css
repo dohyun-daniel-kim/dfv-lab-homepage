@@ -304,6 +304,10 @@ details.collapse > .bib { margin-top: 1.8rem; }
 .ptl-bar.is-lead { background: linear-gradient(90deg, var(--theme-ink), var(--theme)); color: #fff; }
 .ptl-bar.is-part { background: var(--theme-soft); border: 1.5px solid color-mix(in srgb, var(--theme) 55%, transparent); color: var(--theme-ink); }
 .ptl-bar.is-done { opacity: .45; }
+.ptl-row.tall2 { height: 3.65rem; }
+.ptl-bar.wrap { height: 2.85rem; border-radius: .95rem; }
+.ptl-bar.wrap .ptl-name { white-space: normal; word-break: keep-all; line-height: 1.25; }
+.ptl-bar.wrap-any .ptl-name { word-break: normal; }
 .ptl-bar.cut-l { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: 0;
   -webkit-mask-image: linear-gradient(to right, transparent, #000 1.4rem); mask-image: linear-gradient(to right, transparent, #000 1.4rem); }
 .ptl-bar.cut-r { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0;
