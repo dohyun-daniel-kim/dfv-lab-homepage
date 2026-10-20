@@ -253,6 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // projects: this year's timeline, built from the periods in the project list below it
   // ("2026.04.01–10.31" or "2026.09.01–2027.01.31"), so adding a project updates it too.
+  // A bar shows the item's data-short name when it has one; the hover card keeps the full title.
   const ptl = document.getElementById("proj-timeline");
   if (ptl) {
     const Y = new Date().getFullYear();
@@ -276,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
       vc.querySelectorAll(".idx").forEach((x) => x.remove());
       const info = vc.textContent.replace(/\s+/g, " ").trim().split(" · ");
       const icon = (ICONS.find(([re]) => re.test(title)) || [0, "flask"])[1];
-      rows.push({ title, info, icon, s, e, lead: /연구책임/.test(v.textContent) });
+      rows.push({ title, short: it.dataset.short || title, info, icon, s, e, lead: /연구책임/.test(v.textContent) });
     });
     rows.sort((a, b) => a.s - b.s || a.e - b.e);
     document.getElementById("ptl-year").textContent = Y;
@@ -286,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
     rows.forEach((r, i) => {
       const cls = ["ptl-bar", r.lead ? "is-lead" : "is-part", r.s < y0 ? "cut-l" : "", r.e > y1 ? "cut-r" : "", r.e <= now ? "is-done" : ""].join(" ");
       html += `<div class="ptl-row"><span class="${cls}" data-i="${i}" tabindex="0" style="left:${pct(r.s)}%;width:${pct(r.e) - pct(r.s)}%">` +
-        `<span class="ptl-name"><i class="fa-solid fa-${r.icon}"></i>${esc(r.title)}</span></span></div>`;
+        `<span class="ptl-name"><i class="fa-solid fa-${r.icon}"></i>${esc(r.short)}</span></span></div>`;
     });
     if (now >= y0 && now < y1) html += `<i class="ptl-today" style="left:${pct(now)}%"><b>오늘 ${now.getMonth() + 1}.${now.getDate()}</b></i>`;
     html += `</div><div class="ptl-legend"><span><i class="ptl-key is-lead"></i>연구책임</span><span><i class="ptl-key is-part"></i>연구참여</span>` +
