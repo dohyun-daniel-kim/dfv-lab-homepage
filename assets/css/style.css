@@ -292,7 +292,8 @@ details.collapse > .bib { margin-top: 1.8rem; }
 .bib-item .doi:hover { background: var(--theme); color: #fff; text-decoration: none; }
 
 /* projects: this year's timeline (built in main.js) */
-.ptl { position: relative; font-size: .9rem; }
+.ptl { position: relative; font-size: .9rem; --ptl-today: #c2255c; }
+html.dark .ptl { --ptl-today: #e64980; }
 .ptl-chart { position: relative; padding-bottom: 1.9rem; border-right: 1px solid var(--border);
   background: repeating-linear-gradient(to right, var(--border) 0 1px, transparent 1px calc(100% / 12)); }
 .ptl-months { display: grid; grid-template-columns: repeat(12, 1fr); margin-bottom: .4rem; border-bottom: 1px solid var(--border); }
@@ -324,9 +325,9 @@ details.collapse > .bib { margin-top: 1.8rem; }
 .ptl-row.tall { height: 3.9rem; }
 .ptl-row.tall .ptl-bar { top: 1.55rem; }
 .ptl-bar[class*="out-"] .ptl-name i, .ptl-tip strong i { color: var(--theme); }
-.ptl-today { position: absolute; top: 2.1rem; bottom: .2rem; width: 0; border-left: 1.5px dashed color-mix(in srgb, var(--text) 60%, transparent); pointer-events: none; z-index: 1; }
+.ptl-today { position: absolute; top: 2.1rem; bottom: .2rem; width: 0; border-left: 1.5px dashed var(--ptl-today); pointer-events: none; z-index: 1; }
 .ptl-today b { position: absolute; bottom: -.15rem; left: 0; transform: translateX(-50%); white-space: nowrap;
-  font-size: .7rem; font-weight: 700; color: var(--bg); background: var(--text); border-radius: 999px; padding: .1rem .5rem; }
+  font-size: .7rem; font-weight: 700; color: #fff; background: var(--ptl-today); border-radius: 999px; padding: .1rem .5rem; }
 .ptl-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin-top: .8rem; font-size: .8rem; color: var(--muted); }
 .ptl-legend span { display: inline-flex; align-items: center; gap: .4rem; }
 .ptl-key { display: inline-block; width: 1.6rem; height: .8rem; border-radius: 999px; }
@@ -335,7 +336,7 @@ details.collapse > .bib { margin-top: 1.8rem; }
 .ptl-key.is-done { opacity: .45; }
 /* dark mode: the light accent would wash out the white names, so lead bars use a deeper blue */
 html.dark .ptl-bar.is-lead, html.dark .ptl-key.is-lead { background: linear-gradient(90deg, #1a5797, #2a76c4); }
-.ptl-key-today { display: inline-block; height: 1rem; border-left: 1.5px dashed color-mix(in srgb, var(--text) 60%, transparent); }
+.ptl-key-today { display: inline-block; height: 1rem; border-left: 1.5px dashed var(--ptl-today); }
 .ptl-tip { position: absolute; z-index: 5; width: max-content; max-width: min(24rem, 100%); padding: .7rem .9rem; border-radius: 10px; pointer-events: none;
   background: var(--bg); border: 1px solid var(--border); box-shadow: 0 12px 30px -10px rgba(0,0,0,.3); font-size: .82rem; color: var(--muted); }
 .ptl-tip strong { display: block; color: var(--text); font-size: .9rem; margin-bottom: .3rem; line-height: 1.4; }
