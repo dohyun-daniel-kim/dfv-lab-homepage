@@ -259,6 +259,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const y0 = new Date(Y, 0, 1), y1 = new Date(Y + 1, 0, 1);
     const pct = (d) => Math.max(0, Math.min(100, (d - y0) / (y1 - y0) * 100));
     const now = new Date();
+    // first matching keyword picks the icon
+    const ICONS = [[/웨어러블|작업자/, "helmet-safety"], [/플랜트|OT/, "industry"], [/선박|수상|자율운항/, "ship"],
+      [/암호화|안티포렌식/, "key"], [/인공지능|AI/, "robot"], [/취약점/, "bug"], [/포렌식/, "magnifying-glass"]];
+    const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
     const rows = [];
     document.querySelectorAll(".bib-item").forEach((it) => {
       const t = it.querySelector(".t"), v = it.querySelector(".v");
@@ -267,22 +271,73 @@ document.addEventListener("DOMContentLoaded", () => {
       const s = new Date(+m[1], m[2] - 1, +m[3]);
       const e = new Date(+(m[4] || m[1]), m[5] - 1, +m[6] + 1); // end day is inclusive
       if (e <= y0 || s >= y1) return;
-      rows.push({ title: t.textContent.trim(), period: m[0].replace(/\s/g, ""), s, e, lead: /연구책임/.test(v.textContent) });
+      const title = t.textContent.trim();
+      const vc = v.cloneNode(true);
+      vc.querySelectorAll(".idx").forEach((x) => x.remove());
+      const info = vc.textContent.replace(/\s+/g, " ").trim().split(" · ");
+      const icon = (ICONS.find(([re]) => re.test(title)) || [0, "flask"])[1];
+      rows.push({ title, info, icon, s, e, lead: /연구책임/.test(v.textContent) });
     });
     rows.sort((a, b) => a.s - b.s || a.e - b.e);
     document.getElementById("ptl-year").textContent = Y;
 
-    const today = (now >= y0 && now < y1) ? `<i class="ptl-today" style="left:${pct(now)}%"></i>` : "";
     const months = Array.from({ length: 12 }, (_, i) => `<span>${i + 1}월</span>`).join("");
-    let html = `<div class="ptl-row ptl-head"><div class="ptl-label"></div><div class="ptl-track">${months}${today}</div></div>`;
-    rows.forEach((r) => {
-      const cls = ["ptl-bar", r.lead ? "lead" : "part", r.s < y0 ? "cut-l" : "", r.e > y1 ? "cut-r" : "", r.e <= now ? "done" : ""].join(" ");
-      html += `<div class="ptl-row"><div class="ptl-label"><span class="t">${r.title}</span><span class="p">${r.period}</span></div>` +
-        `<div class="ptl-track"><span class="${cls}" style="left:${pct(r.s)}%;width:${pct(r.e) - pct(r.s)}%" title="${r.title} (${r.period})"></span>${today}</div></div>`;
+    let html = `<div class="ptl-chart"><div class="ptl-months">${months}</div>`;
+    rows.forEach((r, i) => {
+      const cls = ["ptl-bar", r.lead ? "is-lead" : "is-part", r.s < y0 ? "cut-l" : "", r.e > y1 ? "cut-r" : "", r.e <= now ? "is-done" : ""].join(" ");
+      html += `<div class="ptl-row"><span class="${cls}" data-i="${i}" tabindex="0" style="left:${pct(r.s)}%;width:${pct(r.e) - pct(r.s)}%">` +
+        `<span class="ptl-name"><i class="fa-solid fa-${r.icon}"></i>${esc(r.title)}</span></span></div>`;
     });
-    html += `<div class="ptl-legend"><span><i class="ptl-bar lead"></i>연구책임</span><span><i class="ptl-bar part"></i>연구참여</span>` +
-      `<span><i class="ptl-bar lead done"></i>종료</span><span><i class="ptl-key-today"></i>오늘</span></div>`;
+    if (now >= y0 && now < y1) html += `<i class="ptl-today" style="left:${pct(now)}%"><b>오늘 ${now.getMonth() + 1}.${now.getDate()}</b></i>`;
+    html += `</div><div class="ptl-legend"><span><i class="ptl-key is-lead"></i>연구책임</span><span><i class="ptl-key is-part"></i>연구참여</span>` +
+      `<span><i class="ptl-key is-lead is-done"></i>종료</span><span><i class="ptl-key-today"></i>오늘</span></div><div class="ptl-tip" hidden></div>`;
     ptl.innerHTML = html;
+
+    // name sits inside the bar when it fits, otherwise beside it (right, then left),
+    // and on narrow screens above it, shifted so it stays inside the chart
+    const place = () => {
+      ptl.querySelectorAll(".ptl-bar").forEach((b) => {
+        const n = b.querySelector(".ptl-name"), row = b.parentElement;
+        b.classList.remove("out-r", "out-l", "out-t");
+        row.classList.remove("tall");
+        n.style.left = n.style.maxWidth = "";
+        if (n.scrollWidth <= b.clientWidth - 4) return;
+        const room = row.clientWidth, w = n.scrollWidth, L = b.offsetLeft, R = L + b.offsetWidth;
+        if (R + w + 12 <= room) b.classList.add("out-r");
+        else if (L - w - 12 >= 0) b.classList.add("out-l");
+        else {
+          b.classList.add("out-t");
+          row.classList.add("tall");
+          n.style.left = Math.max(-L, Math.min(0, room - L - w)) + "px";
+          n.style.maxWidth = room + "px";
+        }
+      });
+    };
+    place();
+    let rt;
+    window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(place, 120); });
+
+    // detail card on hover / focus / tap
+    const tip = ptl.querySelector(".ptl-tip");
+    const show = (b) => {
+      const r = rows[b.dataset.i];
+      tip.innerHTML = `<strong><i class="fa-solid fa-${r.icon}"></i>${esc(r.title)}</strong>` +
+        `<span>${esc(r.info.slice(0, 3).join(" · "))}</span><span>${esc(r.info.slice(3).join(" · "))}</span>`;
+      tip.hidden = false;
+      const pb = ptl.getBoundingClientRect(), bb = b.getBoundingClientRect();
+      const x = Math.max(0, Math.min(pb.width - tip.offsetWidth, bb.left - pb.left + Math.min(bb.width, 200) / 2 - tip.offsetWidth / 2));
+      tip.style.left = x + "px";
+      tip.style.top = (bb.bottom - pb.top + 8) + "px";
+    };
+    const hide = () => { tip.hidden = true; };
+    ptl.querySelectorAll(".ptl-bar").forEach((b) => {
+      b.addEventListener("mouseenter", () => show(b));
+      b.addEventListener("mouseleave", hide);
+      b.addEventListener("focus", () => show(b));
+      b.addEventListener("blur", hide);
+      b.addEventListener("click", (e) => { e.stopPropagation(); show(b); });
+    });
+    document.addEventListener("click", hide);
   }
 
   // lightbox / popup for images
