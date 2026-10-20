@@ -251,6 +251,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
+  // projects: this year's timeline, built from the periods in the project list below it
+  // ("2026.04.01–10.31" or "2026.09.01–2027.01.31"), so adding a project updates it too.
+  const ptl = document.getElementById("proj-timeline");
+  if (ptl) {
+    const Y = new Date().getFullYear();
+    const y0 = new Date(Y, 0, 1), y1 = new Date(Y + 1, 0, 1);
+    const pct = (d) => Math.max(0, Math.min(100, (d - y0) / (y1 - y0) * 100));
+    const now = new Date();
+    const rows = [];
+    document.querySelectorAll(".bib-item").forEach((it) => {
+      const t = it.querySelector(".t"), v = it.querySelector(".v");
+      const m = v && v.textContent.match(/(\d{4})\.(\d{2})\.(\d{2})\s*[–-]\s*(?:(\d{4})\.)?(\d{2})\.(\d{2})/);
+      if (!t || !m) return;
+      const s = new Date(+m[1], m[2] - 1, +m[3]);
+      const e = new Date(+(m[4] || m[1]), m[5] - 1, +m[6] + 1); // end day is inclusive
+      if (e <= y0 || s >= y1) return;
+      rows.push({ title: t.textContent.trim(), period: m[0].replace(/\s/g, ""), s, e, lead: /연구책임/.test(v.textContent) });
+    });
+    rows.sort((a, b) => a.s - b.s || a.e - b.e);
+    document.getElementById("ptl-year").textContent = Y;
+
+    const today = (now >= y0 && now < y1) ? `<i class="ptl-today" style="left:${pct(now)}%"></i>` : "";
+    const months = Array.from({ length: 12 }, (_, i) => `<span>${i + 1}월</span>`).join("");
+    let html = `<div class="ptl-row ptl-head"><div class="ptl-label"></div><div class="ptl-track">${months}${today}</div></div>`;
+    rows.forEach((r) => {
+      const cls = ["ptl-bar", r.lead ? "lead" : "part", r.s < y0 ? "cut-l" : "", r.e > y1 ? "cut-r" : "", r.e <= now ? "done" : ""].join(" ");
+      html += `<div class="ptl-row"><div class="ptl-label"><span class="t">${r.title}</span><span class="p">${r.period}</span></div>` +
+        `<div class="ptl-track"><span class="${cls}" style="left:${pct(r.s)}%;width:${pct(r.e) - pct(r.s)}%" title="${r.title} (${r.period})"></span>${today}</div></div>`;
+    });
+    html += `<div class="ptl-legend"><span><i class="ptl-bar lead"></i>연구책임</span><span><i class="ptl-bar part"></i>연구참여</span>` +
+      `<span><i class="ptl-bar lead done"></i>종료</span><span><i class="ptl-key-today"></i>오늘</span></div>`;
+    ptl.innerHTML = html;
+  }
+
   // lightbox / popup for images
   const lb = document.createElement("div");
   lb.id = "lightbox";
